@@ -20,6 +20,7 @@ import type { ProviderPlugin } from "openclaw/plugin-sdk/provider-models";
 import type { AuthProfileCredential } from "openclaw/plugin-sdk/agent-runtime";
 
 import { loginAntigravity, refreshAntigravityToken } from "@mariozechner/pi-ai/oauth";
+import { withCacheInjection } from "./cache.js";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -230,6 +231,26 @@ const provider: ProviderPlugin = {
       return { suppress: true };
     }
     return null;
+  },
+
+  // Explicit context caching via Google's cachedContents API.
+  //
+  // Intercepts the request payload before it's sent, checks for a valid
+  // server-side cache of the system instruction, and injects the cachedContent
+  // reference when available. The first request per unique system prompt is
+  // always uncached (no latency impact); the cache is created asynchronously
+  // and all subsequent requests benefit from it.
+  //
+  // Falls back to uncached operation silently on any API error (404, 400
+  // min-token threshold, endpoint not supported, network failure).
+  wrapStreamFn(ctx) {
+    if (ctx.provider !== PROVIDER_ID) return null;
+    const underlying = ctx.streamFn;
+    if (!underlying) return null;
+
+    return (model, context, options) => {
+      return underlying(model, context, withCacheInjection(options, model.id));
+    };
   },
 
   // Antigravity models use adaptive thinking by default (same as native Anthropic).
