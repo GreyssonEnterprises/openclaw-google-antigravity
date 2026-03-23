@@ -9,9 +9,9 @@
     "url": "https://github.com/GreyssonEnterprises/openclaw-google-antigravity.git"
   },
   "openclaw": {
-    "extensions": ["dist/index.js"],
+    "extensions": ["index.js"],
     "install": {
-      "minHostVersion": "2026.3.22"
+      "minHostVersion": ">=2026.3.22"
     }
   },
   "scripts": {
