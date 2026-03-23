@@ -29,15 +29,14 @@ const DEFAULT_MODEL_ID = "claude-sonnet-4-6";
 
 // ─── Model catalog ───────────────────────────────────────────────────────────
 // All confirmed google-antigravity models (from UI screenshot 2026-03-23).
-//
-// pi-ai 0.61.1 ships stale contextWindow values for Claude models (200K instead
-// of 1M). Models in STALE_CONTEXT_WINDOW_IDS are suppressed and re-added with
-// correct values. Models absent from pi-ai entirely are added fresh.
+// Appended via augmentModelCatalog — overrides stale contextWindow values from
+// pi-ai's built-in catalog. suppressBuiltInModel is intentionally NOT used
+// because it removes the model from pi-ai's runtime registry, causing
+// "Unknown model" errors on every request.
 
 const ANTIGRAVITY_MODELS = [
   // ── Claude 4.6 ────────────────────────────────────────────────────────────
-  // pi-ai has claude-opus-4-6-thinking with contextWindow: 200000 — suppressed and corrected below.
-  // Note: claude-sonnet-4-6 (non-thinking) is NOT available in Antigravity — do not add it.
+  // Note: claude-sonnet-4-6 (non-thinking) is NOT available in Antigravity.
   {
     id: "claude-opus-4-6-thinking",
     name: "Claude Opus 4.6 (Thinking)",
@@ -88,13 +87,6 @@ const ANTIGRAVITY_MODELS = [
   },
 ];
 
-// Only suppress models where pi-ai ships WRONG contextWindow values.
-// Suppressing correct models is unnecessary and could hide future upstream fixes.
-const STALE_CONTEXT_WINDOW_IDS = new Set([
-  "claude-opus-4-6-thinking",  // pi-ai: 200K → correct: 1M
-  // claude-sonnet-4-6 not included — that model is NOT available in Antigravity
-  // claude-sonnet-4-6-thinking absent from pi-ai entirely (not stale, just missing)
-]);
 
 // ─── Auth run ─────────────────────────────────────────────────────────────────
 
@@ -222,15 +214,6 @@ const provider: ProviderPlugin = {
   // This plugin's entries are appended after discovery and win on deduplication.
   augmentModelCatalog() {
     return ANTIGRAVITY_MODELS;
-  },
-
-  // Suppress only the models where pi-ai ships wrong contextWindow values.
-  suppressBuiltInModel(ctx) {
-    if (ctx.provider !== PROVIDER_ID) return null;
-    if (STALE_CONTEXT_WINDOW_IDS.has(ctx.modelId)) {
-      return { suppress: true };
-    }
-    return null;
   },
 
   // Explicit context caching via Google's cachedContents API.
