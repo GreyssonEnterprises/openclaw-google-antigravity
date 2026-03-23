@@ -1,0 +1,30 @@
+{
+  "name": "openclaw-google-antigravity",
+  "version": "2026.3.22",
+  "description": "Google Antigravity provider plugin for OpenClaw — Claude 4.6 and Gemini 3.1 Pro via Google Cloud Code Assist",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GreyssonEnterprises/openclaw-google-antigravity.git"
+  },
+  "openclaw": {
+    "extensions": ["dist/index.js"],
+    "install": {
+      "minHostVersion": "2026.3.22"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "peerDependencies": {
+    "openclaw": ">=2026.3.22"
+  },
+  "devDependencies": {
+    "@mariozechner/pi-ai": "0.61.1",
+    "openclaw": "2026.3.22",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0"
+  }
+}

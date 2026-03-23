@@ -1,0 +1,21 @@
+{
+  "id": "google-antigravity",
+  "providers": ["google-antigravity"],
+  "providerAuthChoices": [
+    {
+      "provider": "google-antigravity",
+      "method": "oauth",
+      "choiceId": "google-antigravity",
+      "choiceLabel": "Google Antigravity OAuth",
+      "choiceHint": "Claude 4.6 and Gemini 3.1 Pro via Google Cloud Code Assist",
+      "groupId": "google-antigravity",
+      "groupLabel": "Google Antigravity",
+      "groupHint": "Claude 4.6 (Opus, Sonnet) and Gemini 3.1 Pro — free via Cloud Code Assist"
+    }
+  ],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}
